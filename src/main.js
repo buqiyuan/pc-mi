@@ -3,7 +3,28 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-Vue.config.productionTip = false
+//导入重置css样式
+import './styles/reset.css'
+import './styles/common.css'
+//导入阿里字体图标库
+import './assets/fonts/iconfont.css'
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+//导入图片懒加载
+import VueLazyload from 'vue-lazyload'
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'dist/error.png',
+  // loading: './assets/loading.png',
+  loading: 'https://i1.mifile.cn/f/i/2014/cn/placeholder-220!110x110.png',
+  attempt: 1
+})
+
+Vue.use(VueAxios, axios)
 
 new Vue({
   router,
