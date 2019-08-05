@@ -49,6 +49,10 @@
             <input class="search-input" @focus="searchFocus" @blur="searchBlur" type="search">
             <input class="search-btn" value="" type="submit">
             <span class=" iconfont icon-search"></span>
+            <div class="search-hot-words">
+              <a>小米9</a>
+              <a>小米9 SE</a>
+            </div>
           </form>
         </div>
       </div>
@@ -99,7 +103,7 @@
     methods: {
       showNavMenu (index) {//显示头部导航下拉列表
         this.navMenu = this.headerBar[index].navMenu
-        if (this.navMenu.length > 0){
+        if (this.navMenu.length > 0) {
           this.$refs.navMenu.style.height = '230px'
         } else {
           this.$refs.navMenu.style.height = '0'
@@ -109,11 +113,11 @@
         if (e.relatedTarget.className.indexOf('header-bar') !== -1) return
         this.$refs.navMenu.style.height = '0'
       },
-      searchFocus(){//搜索框聚焦
+      searchFocus () {//搜索框聚焦
         document.querySelector('.search-form').style.borderColor = '#ff6700'
         document.querySelector('.search-input').style.borderRight = '1px solid #ff6700'
       },
-      searchBlur(){//搜索框失去焦点
+      searchBlur () {//搜索框失去焦点
         document.querySelector('.search-form').style.borderColor = '#ccc'
         document.querySelector('.search-input').style.borderRight = '1px solid #ccc'
       }
@@ -281,7 +285,7 @@
       overflow: hidden;
       transition: height .5s;
       background-color: white;
-      box-shadow: 0 3px 4px rgba(0,0,0,.18);
+      box-shadow: 0 3px 4px rgba(0, 0, 0, .18);
 
       ul {
         display: flex;
@@ -292,7 +296,8 @@
           position: relative;
           padding-top: 30px;
           text-align: center;
-          &:after{
+
+          &:after {
             position: absolute;
             left: 0;
             top: 35px;
@@ -302,27 +307,33 @@
             content: "";
             background-color: #e0e0e0;
           }
-          a{
+
+          a {
             display: inline-block;
             text-align: center;
             margin-top: 10px;
+
             img {
               width: 160px;
               height: 110px;
               margin: 10px 0;
             }
-            .title{
+
+            .title {
               color: #333;
             }
-            .price{
+
+            .price {
               color: #ff6700;
             }
-            .flags{
+
+            .flags {
               position: absolute;
               top: 0;
               left: 0;
               width: 100%;
-              .flag{
+
+              .flag {
                 display: inline-block;
                 padding: 2px 24px;
                 border: 1px solid #ff6700;
@@ -333,38 +344,65 @@
         }
       }
     }
-    .header-search{
+
+    .header-search {
       float: right;
       margin-top: 26px;
-      .search-form{
+
+      .search-form {
         display: flex;
         position: relative;
         width: 296px;
         height: 50px;
         border: 1px solid #ccc;
         box-sizing: border-box;
-        input{
+
+        input {
           border: none;
           background-color: transparent;
         }
-        .search-input{
+
+        .search-input {
           flex: 5;
           padding-left: 5px;
           border-right: 1px solid #ccc;
         }
-        .search-btn{
+
+        .search-btn {
           flex: 1;
-          &:hover{
+
+          &:hover {
             cursor: pointer;
           }
         }
-        .icon-search{
+
+        .icon-search {
           position: absolute;
           top: 50%;
           right: 12px;
           z-index: -99;
           font-size: 20px;
           transform: translateY(-50%);
+        }
+
+        .search-hot-words {
+          position: absolute;
+          top: 14px;
+          right: 62px;
+          z-index: 2;
+          text-align: right;
+            a{
+              display: inline-block;
+              padding: 0 5px;
+              color: #999;
+              background-color: #eee;
+              margin-right: 5px;
+              transition: all .2s;
+              &:hover{
+                color: white;
+                background-color: #ff6700;
+              }
+          }
         }
       }
     }

@@ -12,7 +12,7 @@
                 <div class="flex-box">
                   <ul v-for="(item2,index) in Math.ceil(item1.list.length/6)" :key="index">
                     <li v-for="(item3,i) in item1.list.slice(index*6,(index+1)*6)" :key="i" class="child-item">
-                      <img :src="item3.imgUrl" alt="">
+                      <img v-lazy="item3.imgUrl" alt="">
                       <span>{{item3.text}}</span>
                     </li>
                   </ul>
@@ -112,7 +112,7 @@
               <li v-for="(item,index) in flashPurchase" :key="index" class="item"
                   :style="{borderTop:`1px solid ${flashPurchaseColors[Math.floor(Math.random()*flashPurchaseColors.length)]}`}">
                 <div class="goods-img">
-                  <img :src="item.imgUrl" alt="">
+                  <img v-lazy="item.imgUrl" alt="">
                 </div>
                 <p class="title">{{item.title}}</p>
                 <p class="desc">{{item.desc}}</p>
@@ -132,7 +132,9 @@
     </div>
     <div class="home-main">
       <div class="container">
+        <!--商品列表start-->
         <div v-for="(item,i) in bannerItems" :key="i" class="home-brick-box">
+          <!--板块标题部分start-->
           <div class="box-hd">
             <div class="clearfix">
               <h2 class="title">{{item.title}}</h2>
@@ -142,7 +144,8 @@
                 </div>
 
                 <ul v-if="Object.prototype.toString.call(item.more) == '[object Array]'" class="more-tabs clearfix">
-                  <li @click="tabBrick(item.id,index)" v-for="(item1,index) in item.more" :key="index" class="tab-item"
+                  <li @mouseenter="tabBrick(item.id,index)" v-for="(item1,index) in item.more" :key="index"
+                      class="tab-item"
                       :class="{active:tabObj[item.id] == index}">
                     {{item1}}
                   </li>
@@ -150,32 +153,139 @@
               </div>
             </div>
           </div>
+          <!--板块标题部分end-->
+          <!--板块商品列表部分start-->
           <div class="box-brick">
             <ul class="brick-promo-list">
               <li v-for="(item,i) in item.brickItemArr" :key="i" class="brick-item">
-                <img :src="item" alt="">
+                <img v-lazy="item" alt="">
               </li>
             </ul>
             <ul v-show="tabObj[item.id] == index" v-for="(outerItem,index) in item.brickListArr" :key="index"
                 class="brick-list">
-              <li v-for="(item,i) in outerItem.itemArr" :key="i" class="brick-item">
-                <div class="figure-img">
-                  <img :src="item.figure" alt="">
+              <template v-for="(item,i) in outerItem.itemArr">
+                <li :key="i" class="brick-item">
+                  <template v-if="outerItem.itemArr.length - 1 - i > 0 && i >= 7">
+                    <ul class="more">
+                      <template v-for="(item,j) in outerItem.itemArr.slice(i)">
+                        <li v-if="item.figure" :key="j" class="flex-box brick-item">
+                          <div class="figure-img flex-right">
+                            <img v-lazy="item.figure" alt="">
+                          </div>
+                          <div class="flex-left">
+                            <div class="title">{{item.title}}</div>
+                            <div class="price">
+                              {{item.price.now}}元
+                              <del>{{item.price.old}}</del>
+                            </div>
+                          </div>
+                        </li>
+                        <li v-else class="figure-more brick-item">
+                          <a href="">
+                            <div class="left">
+                              {{item.text}}
+                              <p class="sub">{{item.sub}}</p>
+                            </div>
+                            <span class="iconfont icon-youjiantou"></span>
+                          </a>
+                        </li>
+                      </template>
+                    </ul>
+                  </template>
+                  <template v-else-if="i <= 7">
+                    <div class="figure-img">
+                      <img v-lazy="item.figure" alt="">
+                    </div>
+                    <div class="title">{{item.title}}</div>
+                    <div class="desc">{{item.desc}}</div>
+                    <div class="price">
+                      <span class="now-price">{{item.price ? item.price.now : ''}}元</span>
+                      <del class="old-price">{{item.price ? item.price.old : ''}}</del>
+                    </div>
+                    <div class="flag" :class="item.flag.style"
+                         v-if="Object.prototype.toString.call(item.flag) == '[object Object]'">
+                      {{item.flag.text}}
+                    </div>
+                    <template v-if="item.review">
+                      <div class="review-box" v-if="item.review.text.trim() != ''">
+                        <p class="review">{{item.review.text}}</p>
+                        <p class="author">{{item.review.author}}</p>
+                      </div>
+                    </template>
+                  </template>
+                </li>
+              </template>
+            </ul>
+          </div>
+          <!--板块商品列表end-->
+          <!--板块底部广告部分start-->
+          <div class="home-banner-box">
+            <img v-lazy="item.imgUrl" alt="">
+          </div>
+          <!--板块底部广告部分end-->
+          <div>
+          </div>
+          <!---->
+        </div>
+        <!--商品列表end-->
+        <!--推荐商品列表start-->
+        <div class="recommend-box">
+          <div class="box-hd">
+            <h2 class="title">为您推荐</h2>
+            <div class="control-area">
+              <a class="control-prev" @click="switchRecommend('prev')" href="javascript:void(0)"></a>
+              <a class="control-next has" @click="switchRecommend('next')" href="javascript:void(0)"></a>
+            </div>
+          </div>
+          <div class="recommend-wrapper">
+            <ul ref="recommedWrapper" class="recommend-carousel">
+              <li class="recommend-carousel-item" v-for="(item,i) in recommendList" :key="i">
+                <div class="img-box">
+                  <img v-lazy="item.imgUrl" width="100%" alt="">
                 </div>
-                <div class="title">{{item.title}}</div>
-                <div class="desc">{{item.desc}}</div>
-                <div class="price">
-                  {{item.price.now}}
-                  <del>{{item.price.old}}</del>
-                </div>
-                <div class="flag" v-if="item.flag != ''">
-                  {{item.flag}}
-                </div>
+                <p class="name">{{item.name}}</p>
+                <p class="price">{{item.price}}</p>
+                <p class="tips">{{item.tips}}</p>
+                <p class="notice">{{item.notice}}</p>
               </li>
             </ul>
           </div>
-          <div></div>
         </div>
+        <!--推荐商品列表end-->
+        <!--内容列表start-->
+        <div class="content-box">
+          <div class="box-hd">
+            <h2 class="title">内容</h2>
+          </div>
+          <div class="content-wrapper">
+            <div v-for="(outerItem,i) in contentList" :key="i" class="content-list">
+              <div class="title">{{outerItem.title}}</div>
+              <ul ref="contentCarousel" class="content-carousel clearfix"
+                  :style="{width:`${296 * outerItem.carouselArr.length}px`}">
+                <li v-for="(item,i) in outerItem.carouselArr" :key="i" class="content-item">
+                  <p class="name">{{item.name}}</p>
+                  <p class="desc">{{item.desc}}</p>
+                  <p class="price">{{item.price}}</p>
+                  <div class="img-box">
+                    <img :src="item.figure" alt="">
+                  </div>
+                </li>
+              </ul>
+              <div class="left-arrow"
+                   @click="switchContentItem(i,parseInt($refs.contentIndicator[i].querySelector('li.active').dataset.index)-1)"></div>
+              <div class="right-arrow"
+                   @click="switchContentItem(i,parseInt($refs.contentIndicator[i].querySelector('li.active').dataset.index)+1)"></div>
+              <ul ref="contentIndicator" class="indicator-area">
+                <li v-for="(item,index) in outerItem.carouselArr.length" :key="index" :data-index="index"
+                    @click="switchContentItem(i,index)"
+                    :class="{active: contentIndicator[i] == index}">
+                  <span class="dot"></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!--内容列表end-->
       </div>
     </div>
   </div>
@@ -191,9 +301,12 @@
         categoryList: [],//左侧分类
         carouselList: [],//轮播图
         flashPurchase: [],//闪购商品
+        recommendList: [],//推荐商品列表
+        contentList: [],//内容列表
         flashPurchaseColors: ['#ffac13', '#e53935', '#83c44e', '#2196f3', '#00c0a5'],
         bannerItems: [],//所有banner的数据
-        tabObj: {}
+        tabObj: {},
+        contentIndicator: [],
       }
     },
     created () {
@@ -204,16 +317,22 @@
           this.carouselList = data.carouselImg
           this.flashPurchase = data.flashPurchase
           this.bannerItems = data.bannerItems
+          this.recommendList = data.recommendList
+          this.contentList = data.contentList
 
           this.bannerItems.forEach(item => {
             // this.tabObj[item.id] = 0如果需要监听对象属性的变化需要用到this.$set
-            this.$set(this.tabObj,item.id,0)
+            this.$set(this.tabObj, item.id, 0)
+          })
+          this.contentList.forEach((item, i) => {
+            this.$set(this.contentIndicator, i, 0)
           })
           this.$nextTick(() => {
             //默认显示
             this.switchCarousel(this.carouselIndex++)
             //开启自动轮播图
             this.autoCarousel()
+            this.setBrickItemStyle()
           })
         } else {
           console.log('数据请求失败！请检查请求地址是否有误')
@@ -239,14 +358,15 @@
           }
           //获取所有的轮播图
           let items = this.$refs.carouselItem
+
           //获取所有的轮播图指示器
           let dots = this.$refs.dots
           //移除所有轮播图身上的状态类
-          items.forEach(item => {
+          Array.from(items).forEach(item => {
             item.classList.remove('active')
           })
           //移除所有指示器的状态类
-          dots.forEach(item => {
+          ;[...dots].forEach(item => {
             item.classList.remove('active')
           })
           //给当前轮播图添加状态类
@@ -350,8 +470,71 @@
         }, 10)
       },
       //切换tab brick商品
-      tabBrick(id,index){
-        this.$set(this.tabObj,id,index)
+      tabBrick (id, index) {
+        this.$set(this.tabObj, id, index)
+      },
+      //设置brick浏览更多的样式
+      setBrickItemStyle () {
+        ;[...document.querySelectorAll('.brick-list')].forEach(item => {
+          let lis = item.querySelectorAll('li')
+          lis.forEach(item => {
+            item.querySelector('.more') ? item.querySelector('.more').parentElement.classList.add('no-transition') : ''
+            if (item.childElementCount < 1) {
+              item.parentElement.removeChild(item)
+            }
+          })
+        })
+        let recBox = this.$refs.recommedWrapper
+        let recItems = this.$refs.recommedWrapper.querySelectorAll('li')
+        let recItemWid = 0
+        ;[...recItems].forEach(item => {
+          recItemWid += item.offsetWidth + 14
+        })
+        recBox.style.width = recItemWid + 'px'
+      },
+      //  切换recommend推荐商品列表
+      switchRecommend (direction) {
+        //获取
+        let recBox = this.$refs.recommedWrapper
+        let left = parseInt(recBox.style.marginLeft || 0)
+        let recItemWid = (this.$refs.recommedWrapper.querySelector('li').offsetWidth + 14) * 5
+        //如果点击的上一页
+        if (direction == 'prev') {
+          if (left >= 0) return
+          recBox.style.marginLeft = -(Math.abs(left) - recItemWid) + 'px'
+          document.querySelector('.recommend-box .control-prev').classList.add('has')
+          document.querySelector('.recommend-box .control-next').classList.add('has')
+          if (Math.abs(left) <= recItemWid) document.querySelector('.recommend-box .control-prev').classList.remove('has')
+        }
+        //如果点击的是下一页
+        if (direction == 'next') {
+          let totalWid = parseInt(recBox.offsetWidth) - recItemWid
+          if (Math.abs(left) >= totalWid) return
+          recBox.style.marginLeft = -(recItemWid + Math.abs(left)) + 'px'
+          document.querySelector('.recommend-box .control-prev').classList.add('has')
+          document.querySelector('.recommend-box .control-next').classList.add('has')
+          if (recBox.offsetWidth - Math.abs(parseInt(recBox.style.marginLeft)) <= recItemWid) {
+            document.querySelector('.recommend-box .control-next').classList.remove('has')
+          }
+        }
+      },
+      //切换内容
+      switchContentItem (i, index) {
+        let carouseler = this.$refs.contentCarousel[i]
+        let indicator = carouseler.parentElement.querySelectorAll('.indicator-area li')
+        if (index >= indicator.length) {
+          carouseler.parentElement.querySelector('.right-arrow').style.cursor = 'no-drop'
+          return this.$set(this.contentIndicator, i, indicator.length - 1)
+        } else if (index < 0) {
+          carouseler.parentElement.querySelector('.left-arrow').style.cursor = 'no-drop'
+          return this.$set(this.contentIndicator, i, 0)
+        }
+        carouseler.parentElement.querySelector('.left-arrow').style.cursor = 'pointer'
+        carouseler.parentElement.querySelector('.right-arrow').style.cursor = 'pointer'
+        //更新指示器数组以更新视图
+        this.$set(this.contentIndicator, i, index)
+        let step = carouseler.querySelector('.content-item').offsetWidth
+        carouseler.style.marginLeft = `-${step * index}px`
       }
     }
   }
@@ -836,13 +1019,28 @@
 
   /*页面主体部分start*/
   .home-main {
+    margin-top: 40px;
+    padding-bottom: 80px;
     background: #f5f5f5;
 
     .home-brick-box {
       display: flex;
       flex-direction: column;
-      height: 686px;
-      margin-top: 20px;
+      height: 882px;
+
+      .home-banner-box {
+        height: 120px;
+        margin: 40px 0;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+      }
 
       .box-hd {
         height: 58px;
@@ -894,34 +1092,459 @@
           height: auto;
         }
 
+        .brick-item:hover {
+          cursor: pointer;
+          transform: translate3d(0, -2px, 0);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, .2);
+        }
+
+        .no-transition:hover {
+          transform: none;
+          box-shadow: none;
+          transition: none;
+        }
+
         .brick-promo-list {
           display: grid;
           gap: 10px;
 
           li.brick-item {
-            background-color: #795da3;
           }
         }
 
         .brick-list {
+          position: relative;
           display: grid;
           height: 100%;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
+          grid-template-columns: repeat(4, minmax(auto, 234px));
+          gap: 10px;
 
           li.brick-item {
+            position: relative;
+            text-align: center;
             background-color: white;
+            transition: all .2s;
 
             .figure-img {
+              margin: 20px 0;
+
               img {
                 width: 160px;
                 height: 160px;
+              }
+            }
+
+            .title {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              font-size: 14px;
+              font-weight: 400;
+              color: #333;
+            }
+
+            .desc {
+              height: 20px;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              font-size: 12px;
+              color: #b0b0b0;
+            }
+
+            .price {
+              margin-top: 10px;
+              font-size: 13px;
+
+              .now-price {
+                color: #ff6700;
+              }
+
+              .old-price {
+                margin-left: 6px;
+                color: #ccc;
+              }
+            }
+
+            .flag {
+              position: absolute;
+              top: 0;
+              left: 50%;
+              transform: translateX(-50%);
+              padding: 1px 12px;
+              color: white;
+
+              &.flag-new {
+                background-color: #83c44e;
+                z-index: 5;
+              }
+
+              &.flag-saleoff {
+                background-color: #e53935;
+              }
+            }
+
+            .more {
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              background-color: #f5f5f5;
+
+              li {
+                flex: 1;
+
+                &.flex-box {
+                  margin-bottom: 10px;
+                  display: flex;
+                  flex-direction: row-reverse;
+                  align-items: center;
+                  background-color: white;
+
+                  .flex-left {
+                    flex: 1;
+                  }
+
+                  .flex-right {
+                    flex: 1;
+                  }
+
+                  .price {
+                    color: #ff6700;
+                  }
+                }
+
+                img {
+                  width: 80px;
+                  height: 80px;
+                }
+              }
+
+              .figure-more {
+
+                a {
+                  position: relative;
+                  display: flex;
+                  flex: 1;
+                  height: 100%;
+                  align-items: center;
+                  background-color: white;
+                  font-size: 18px;
+
+                  .icon-youjiantou {
+                    flex: 1;
+                    font-size: 42px;
+                    color: #ff6700;
+                  }
+
+                  .left {
+                    flex: 1;
+
+                    .sub {
+                      font-size: 12px;
+                      color: #ccc;
+                    }
+                  }
+                }
+              }
+            }
+
+            .review-box {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              height: 0;
+              opacity: 0;
+              color: white;
+              padding: 8px 30px;
+              box-sizing: border-box;
+              background-color: #ff6700;
+              overflow: hidden;
+              transition: all .5s;
+
+              .author {
+                color: rgba(255, 255, 255, 0.6);
+              }
+            }
+
+            &:hover .review-box {
+              opacity: 1;
+              height: 76px;
+            }
+          }
+        }
+      }
+    }
+
+    /*推荐商品部分start*/
+    .recommend-box {
+      width: 100%;
+
+      .box-hd {
+        display: flex;
+        justify-content: space-between;
+
+        .title {
+          font-size: 22px;
+          font-weight: 200;
+        }
+
+        .control-area {
+
+          .control-prev,
+          .control-next {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 24px;
+            background-color: transparent;
+            border: 1px solid #e0e0e0;
+
+            &.has {
+              &:after {
+                border-color: #666;
+              }
+            }
+          }
+
+          .control-prev {
+            border-right: none;
+          }
+
+          .control-prev:after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            top: 7px;
+            left: 14px;
+            border-top: 2px solid #ddd;
+            border-right: 2px solid #ddd;
+            transform: rotate(-135deg);
+          }
+
+          .control-next:after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            top: 7px;
+            right: 14px;
+            border-top: 2px solid #ddd;
+            border-right: 2px solid #ddd;
+            transform: rotate(45deg);
+          }
+        }
+
+      }
+
+      .recommend-wrapper {
+        height: 320px;
+        width: 100%;
+        overflow: hidden;
+
+        .recommend-carousel {
+          display: flex;
+          height: 100%;
+          flex-wrap: nowrap;
+          transition: margin-left .3s ease-in;
+
+          li.recommend-carousel-item {
+            flex: none;
+            width: 234px;
+            margin-right: 14px;
+            height: 300px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: white;
+            transition: all .2s;
+
+            &:hover {
+              transform: translate3d(0, -2px, 0);
+              box-shadow: 0 15px 30px 0 rgba(0, 0, 0, .1);
+            }
+
+            .img-box {
+              padding-top: 40px;
+
+              img {
+                width: 140px;
+                height: 140px;
+              }
+            }
+
+            p {
+              margin: 10px 0;
+              font-size: 12px;
+
+              &.name {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                font-size: 14px;
+              }
+
+              &.price {
+                color: #ff6700;
+              }
+
+              &.tips {
+                color: #757575;
               }
             }
           }
         }
       }
     }
+
+    /*推荐商品部分end*/
+    /*内容模块start*/
+    .content-box {
+
+      .content-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        .content-list {
+          position: relative;
+          width: 296px;
+          padding-top: 45px;
+          text-align: center;
+          background-color: white;
+          box-sizing: border-box;
+          overflow: hidden;
+          &:hover{
+            cursor: pointer;
+          }
+          &:hover .left-arrow,
+          &:hover .right-arrow {
+            opacity: .3;
+            z-index: 5;
+          }
+
+          .title {
+            font-size: 16px;
+            color: rgb(255, 172, 19);
+            margin-bottom: 14px;
+          }
+
+          .content-carousel {
+            transition: margin-left .3s;
+
+            .content-item {
+              float: left;
+              width: 296px;
+              height: 340px;
+
+              .img-box {
+                img {
+                  width: 216px;
+                  height: 154px;
+                }
+              }
+
+              p {
+                padding: 2px 18px;
+              }
+
+              .name {
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                font-size: 20px;
+              }
+
+              .desc {
+                font-size: 10px;
+                color: #aaa;
+              }
+
+              .price {
+                margin: 35px 0 18px;
+                font-size: 14px;
+              }
+            }
+          }
+
+          .left-arrow,
+          .right-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 48px;
+            z-index: -999;
+            opacity: 0;
+            transition: all .3s;
+            background-color: rgba(0, 0, 0, .5);
+            &:hover{
+              opacity: 1;
+            }
+            &:before{
+              content: '';
+              position: absolute;
+              top: 50%;
+              width: 10px;
+              height: 10px;
+              border-top: 2px solid white;
+              border-right: 2px solid white;
+            }
+          }
+
+          .left-arrow {
+            left: 0;
+            &:before{
+              left: 63%;
+              transform: translate(-50%,-50%) rotate(-135deg);
+            }
+          }
+
+          .right-arrow {
+            right: 0;
+            &:before{
+              right: 10%;
+              transform: translate(-50%,-50%) rotate(45deg);
+            }
+          }
+
+          .indicator-area {
+            position: absolute;
+            left: 0;
+            bottom: 10px;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+
+            li {
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              padding: 10px;
+              margin: 0 2px;
+
+              span {
+                display: inline-block;
+                width: 5px;
+                height: 5px;
+                border-radius: 10px;
+                background-color: #aaa;
+                border: 2px solid white;
+                transition: all .3s;
+              }
+
+              &.active span {
+                background-color: transparent;
+                border-color: #ff6700;
+              }
+            }
+          }
+        }
+      }
+
+    }
+
+    /*内容模块end*/
   }
 
   /*页面主体部分end*/
