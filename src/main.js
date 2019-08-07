@@ -11,7 +11,10 @@ import './assets/fonts/iconfont.css'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+//调试环境请求根路径
 axios.defaults.baseURL = 'http://localhost:3001';
+//线上请求根路径
+// axios.defaults.baseURL = 'https://buqiyuan.github.io/my-demo/pc-mi/dist';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 //导入图片懒加载
 import VueLazyload from 'vue-lazyload'

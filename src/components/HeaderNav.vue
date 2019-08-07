@@ -82,6 +82,7 @@
 <script>
   export default {
     name: 'Header',
+    props: {homeData:Object},
     data () {
       return {
         topBar: [],
@@ -90,15 +91,12 @@
         navMenu: []
       }
     },
-    created () {
-      this.axios.get('/index').then(res => {
-        if (res.data.status === 200) {
-          this.topBar = res.data.data.topBar
-          this.headerBar = res.data.data.headerBar
-        } else {
-          console.log('数据请求失败！请检查链接及参数是否有误')
-        }
-      })
+    watch:{
+      //监视父组件通过异步请求的数据
+      homeData:function (val) {
+        this.topBar = val.topBar
+        this.headerBar = val.headerBar
+      }
     },
     methods: {
       showNavMenu (index) {//显示头部导航下拉列表

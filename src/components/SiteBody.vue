@@ -294,6 +294,7 @@
 <script>
   export default {
     name: 'SiteBody',
+    props: {homeData:Object},
     data () {
       return {
         carouselIndex: 0,//轮播图项索引
@@ -309,17 +310,16 @@
         contentIndicator: [],
       }
     },
-    created () {
-      this.axios.get('/index').then(res => {
-        if (res.data.status === 200) {
-          let data = res.data.data
-          this.categoryList = data.category
-          this.carouselList = data.carouselImg
-          this.flashPurchase = data.flashPurchase
-          this.bannerItems = data.bannerItems
-          this.recommendList = data.recommendList
-          this.contentList = data.contentList
-
+    watch:{
+      //监视父组件通过异步请求的数据
+      homeData:function (val) {
+        this.categoryList = val.category
+        this.carouselList = val.carouselImg
+        this.flashPurchase = val.flashPurchase
+        this.bannerItems = val.bannerItems
+        this.recommendList = val.recommendList
+        this.contentList = val.contentList
+        if (Object.keys(val).length  !== 0) {
           this.bannerItems.forEach(item => {
             // this.tabObj[item.id] = 0如果需要监听对象属性的变化需要用到this.$set
             this.$set(this.tabObj, item.id, 0)
@@ -334,10 +334,8 @@
             this.autoCarousel()
             this.setBrickItemStyle()
           })
-        } else {
-          console.log('数据请求失败！请检查请求地址是否有误')
         }
-      })
+      }
     },
     mounted () {
       this.$nextTick(() => {

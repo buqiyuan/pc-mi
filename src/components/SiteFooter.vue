@@ -65,19 +65,17 @@
 <script>
   export default {
     name: 'Footer',
+    props:{homeData:Object},
     data () {
       return {
         footerLinks: []
       }
     },
-    created () {
-      this.axios.get('/index').then((res) => {
-        if (res.data.status == 200) {
-          this.footerLinks = res.data.data.footerLinks
-        } else {
-          console.log('数据请求失败！请检查请求地址是否有误！')
-        }
-      })
+    watch:{
+      //监视父组件通过异步请求的数据
+      homeData:function (val) {
+        this.footerLinks = val.footerLinks
+      }
     }
   }
 </script>
