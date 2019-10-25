@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["about"],{f820:function(n,t,e){"use strict";e.r(t);var u=function(){var n=this,t=n.$createElement,e=n._self._c||t;return e("div")},o=[],a={data:function(){return{}},mounted:function(){}},c=a,r=e("2877"),i=Object(r["a"])(c,u,o,!1,null,null,null);t["default"]=i.exports}}]);
+//# sourceMappingURL=about.db406093.js.map
