@@ -25,5 +25,5 @@ yarn run test
 yarn run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 在线预览地址
+See [高仿小米PC端官网首页](https://buqiyuan.xyz/pc-mi).

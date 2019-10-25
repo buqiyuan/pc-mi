@@ -20,7 +20,7 @@ export default {
     }
   },
   created () {
-    this.axios.get('/index').then(res => {
+    this.axios.get('/api/index.json').then(res => {
       if (res.data.status === 200) {
         this.homeData = res.data.data
       } else {

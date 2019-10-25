@@ -11,8 +11,11 @@ import './assets/fonts/iconfont.css'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+let baseUrl = process.env.NODE_ENV === 'production'
+  ? 'https://buqiyuan.xyz/pc-mi/'
+  : 'http://localhost:3001'
 //调试环境请求根路径
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = baseUrl;
 //线上请求根路径
 // axios.defaults.baseURL = 'https://buqiyuan.github.io/my-demo/pc-mi/dist';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
